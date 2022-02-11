@@ -56,6 +56,20 @@ const Login = (props) => {
   }, [enteredEmail, enteredPassword]);
   // Notice we're only updating the state here, it is only considered a side effect if we listen ot every key stroke and save that entered data and trigger another action in response. Side effect of user entering data. Can be use for many action that should be executed in response to any action.
 
+  // IMPORTANT DEMONSTRATION must understan how useEffect works: A SUMMARY
+  // If we add only the first argument, this will run when the componenet first mounts and then also for every state update, onBlur events and every keystroke
+  // Because useEffct always runs after every component render cycle.
+  // UPON ADDING and EMPTY array: now this only excute only the very first time the component mounts
+  // now if we add a dependency, it will run the first time and anytime the dependency changes
+  useEffect(() => {
+    console.log('EFFECT RUNNING');
+
+    // Now given that the second argument is an empty array the cleanpu function will not run unless when the component is removed from the dom, ex when we log in (the form is removed)!
+    return () => {
+      console.log('EFFECT CLEANUP');
+    };
+  }, [])
+
   const validateEmailHandler = () => {
     setEmailIsValid(enteredEmail.includes('@'));
   };

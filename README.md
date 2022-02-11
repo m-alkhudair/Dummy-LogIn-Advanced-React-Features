@@ -54,5 +54,20 @@ That is correct, but there are a few exceptions you should be aware of:
 1. Component state.
 2. Props.
 
+### Important demonstration:
+- If we add only the first argument, this will run when the componenet first mounts and then also for every state update, onBlur events and every keystroke
+- Because useEffct always runs after every component render cycle.
+- Upon adding and **EMPTY** array: now this only excute only the very first time the component mounts
+- Now if we add a dependency, it will run the first time and anytime the dependency changes
+
+useEffect(() => {
+console.log('EFFECT RUNNING');
+
+// Now given that the second argument is an empty array the cleanpu function will not run unless when the component is removed from the dom, ex when we log in (the form is removed)!
+return () => {
+    console.log('EFFECT CLEANUP');
+};
+}, [])
+
 #### Udemy React Course by Maximilian Schwarzmüller
 - Excellent course and amazing instructor
