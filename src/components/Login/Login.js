@@ -35,9 +35,24 @@ const Login = (props) => {
     // We need to add the dependencies or else the function will only run once (the first time).
     // if the depenencies "argument" was omitted, the function will always run every time the component is re-evaluated (state changes with each key stroke, and this is effectively like putting the logic outside of the useEffect()), this will creat an infinate loop
     // Now with the dependencies, if either one of their value change, the funciton will re-run, if none of them change the function will not run
-    setFormIsValid(
-      enteredEmail.trim().length > 6 && enteredEmail.includes('@')
-    );
+
+    // Now this code will run on every keystroke (without the setTimeout()) because the state changes on every keystroke
+    // In more complex cases that involve for ex http requests this would be too much network traffic. also for every key stroke react check whether it should update the dom
+    // So now we need an Effect that does some clean up work
+    // De-boucing: when the user make a paus after typing then we check validity, by using setTimeout() a function built into the browser.
+    const identifier = setTimeout(() => {
+      console.log('Checking form validity');
+      setFormIsValid(
+        enteredEmail.trim().length > 6 && enteredEmail.includes('@')
+      );
+    }, 500);
+
+    // this has to return a function and only a function, this is for Clean Up. This a Clean Up Function.
+    // This clean up function will run before the function above does except for the very first time and whenever the component housing this is reused (unmounds from the dom).
+    return () => {
+      console.log('CLEANUP');
+      clearTimeout(identifier);
+    };
   }, [enteredEmail, enteredPassword]);
   // Notice we're only updating the state here, it is only considered a side effect if we listen ot every key stroke and save that entered data and trigger another action in response. Side effect of user entering data. Can be use for many action that should be executed in response to any action.
 

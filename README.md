@@ -53,3 +53,6 @@ That is correct, but there are a few exceptions you should be aware of:
 ### Do use:
 1. Component state.
 2. Props.
+
+#### Udemy React Course by Maximilian Schwarzmüller
+- Excellent course and amazing instructor

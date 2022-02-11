@@ -20,6 +20,7 @@ function App() {
      setIsLoggedIn(true);
    }
   }, []);
+  // Notice empty array not omitted
 
   
   const loginHandler = (email, password) => {
