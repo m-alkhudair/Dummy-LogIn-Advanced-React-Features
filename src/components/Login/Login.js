@@ -1,20 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import Card from '../UI/Card/Card';
-import classes from './Login.module.css';
-import Button from '../UI/Button/Button';
+import Card from "../UI/Card/Card";
+import classes from "./Login.module.css";
+import Button from "../UI/Button/Button";
 
 const Login = (props) => {
-  const [enteredEmail, setEnteredEmail] = useState('');
+  const [enteredEmail, setEnteredEmail] = useState("");
   const [emailIsValid, setEmailIsValid] = useState();
-  const [enteredPassword, setEnteredPassword] = useState('');
+  const [enteredPassword, setEnteredPassword] = useState("");
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
+
+  // INTRO to useReducer(): just a small intro to useReducer, why we need it.
+  // in the scenario, when we're not using useEffect() (imagine we commented it out), and we're back to using the prev virsion of this code (the ones in the email and password change handlers, the last lines commented out)
 
   // Runs on each key stroke and only sets form as valid when email includes '@' and password is >6
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
 
+    // Part of the INTRO for useReducer: note that we are updating the stade based on another sate
+    // Remember, to update a state based on a prev one we need to use a function form
+    // However this does NOT work here becuase the sate it depends on is another state! not the prev virsion(snapshot) of the same state.
+    // It seemed to run just fine, but we should avoid this method(w/o function form) because of the way react schedules state updates!
+    // This is a good oppartunity to use useReducer, however another solution w/o useReducer is to use useState and set it up as an object (but for more complexity is better to use useReducer)
     // setFormIsValid(
     //   event.target.value.includes('@') && enteredPassword.trim().length > 6
     // );
@@ -24,6 +32,7 @@ const Login = (props) => {
   const passwordChangeHandler = (event) => {
     setEnteredPassword(event.target.value);
 
+    // same problem as above
     // setFormIsValid(
     //   event.target.value.trim().length > 6 && enteredEmail.includes('@')
     // );
@@ -41,16 +50,16 @@ const Login = (props) => {
     // So now we need an Effect that does some clean up work
     // De-boucing: when the user make a paus after typing then we check validity, by using setTimeout() a function built into the browser.
     const identifier = setTimeout(() => {
-      console.log('Checking form validity');
+      console.log("Checking form validity");
       setFormIsValid(
-        enteredEmail.trim().length > 6 && enteredEmail.includes('@')
+        enteredEmail.trim().length > 6 && enteredEmail.includes("@")
       );
     }, 500);
 
     // this has to return a function and only a function, this is for Clean Up. This a Clean Up Function.
     // This clean up function will run before the function above does except for the very first time and whenever the component housing this is reused (unmounds from the dom).
     return () => {
-      console.log('CLEANUP');
+      console.log("CLEANUP");
       clearTimeout(identifier);
     };
   }, [enteredEmail, enteredPassword]);
@@ -62,19 +71,21 @@ const Login = (props) => {
   // UPON ADDING and EMPTY array: now this only excute only the very first time the component mounts
   // now if we add a dependency, it will run the first time and anytime the dependency changes
   useEffect(() => {
-    console.log('EFFECT RUNNING');
+    console.log("EFFECT RUNNING");
 
     // Now given that the second argument is an empty array the cleanpu function will not run unless when the component is removed from the dom, ex when we log in (the form is removed)!
     return () => {
-      console.log('EFFECT CLEANUP');
+      console.log("EFFECT CLEANUP");
     };
-  }, [])
+  }, []);
 
   const validateEmailHandler = () => {
-    setEmailIsValid(enteredEmail.includes('@'));
+    // same problem as above
+    setEmailIsValid(enteredEmail.includes("@"));
   };
 
   const validatePasswordHandler = () => {
+    // same problem as above
     setPasswordIsValid(enteredPassword.trim().length > 6);
   };
 
@@ -88,7 +99,7 @@ const Login = (props) => {
       <form onSubmit={submitHandler}>
         <div
           className={`${classes.control} ${
-            emailIsValid === false ? classes.invalid : ''
+            emailIsValid === false ? classes.invalid : ""
           }`}
         >
           <label htmlFor="email">E-Mail</label>
@@ -103,7 +114,7 @@ const Login = (props) => {
         </div>
         <div
           className={`${classes.control} ${
-            passwordIsValid === false ? classes.invalid : ''
+            passwordIsValid === false ? classes.invalid : ""
           }`}
         >
           <label htmlFor="password">Password</label>
